@@ -4,3 +4,5 @@ Reference/Playbooks.pdf
 Reference/Player Reference.pdf
 Web Scraping.ipynb
 *.ipynb
+*.pyc
+token.token
