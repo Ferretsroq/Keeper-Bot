@@ -7,7 +7,7 @@
     "move5": "**Apprentice:**\nYou have an apprentice: name them. Your job is to teach them the Sect's ways. They count as an **ally: subordinate** (motivation: to follow your instructions to the letter).",
     "move6": "**Helping Hand:**\nWhen you successfully **help out** another hunter, they get +2 instead of the usual +1.",
     "move7": "**That Old Black Magic:**\nWhen you **use magic**, you can ask a question from the **investigate a mystery** move as your effect.",
-    "move8": "When you **are in good standing with your Sect, at the beginning of each mystery**, roll +Charm. On a 10+ they provide some useful info or help in the field. On a 7-9 you get a mission associated with the mystery, and if you do it you'll get some info or help too. On a miss, they ask you to do something bad. If you fail a mission or refuse an order, you'll be in trouble with the Sect until you atone.",
+    "move8": "When you **are in good standing with your Sect, at the beginning of each mystery**,\nroll +Charm. On a 10+ they provide some useful info or help in the field. On a 7-9 you get a mission associated with the mystery, and if you do it you'll get some info or help too. On a miss, they ask you to do something bad. If you fail a mission or refuse an order, you'll be in trouble with the Sect until you atone.",
     "old0": "Sword (2-harm hand messy)",
     "old1": "Axe (2-harm hand messy)",
     "old2": "Big sword (3-harm hand messy heavy)",

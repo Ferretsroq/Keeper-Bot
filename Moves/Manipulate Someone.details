@@ -8,6 +8,33 @@ to a monster attack, you could tell them you are with
 the police, or just offer them some cash for answering your
 questions.
 
+```
+Once you have given them a reason, tell them what you
+want them to do and roll +Charm.
+
+For a normal person:
+
+* If you get 10+, then they'll do it for the reason you gave
+them. If you asked too much, they'll tell you the minimum
+it would take for them to do it (or if there's no way they'd
+do it).
+* On a 7-9, they'll do it, but only if you do something for
+them right now to show that you mean it. If you asked too
+much, they'll tell you what, if anything, it would take for
+them to do it.
+* On a miss, your approach is completely wrong: you offend
+or anger the target.
+
+For another hunter:
+
+* On a 10+ they mark experience and get +1 forward if they
+do what you ask.
+* On a 7-9, they mark experience if they do what you ask.
+* On a miss, it's up to that hunter to decide how badly you
+offend or annoy them. They mark experience if they do not
+do what you asked.
+```
+
 Here's the most important thing to remember about the manipulate
 someone move: the hunter needs to offer something that makes the
 target willing to do what the hunter asks.
@@ -45,3 +72,29 @@ in the game. If they ever meet that person again, this failure is not
 going to be forgotten! That means that you can set a new mystery in
 the same place, and the hunters will need to deal with bystanders who
 have no reason to trust them, or who may even want revenge.
+
+**Manipulating Monsters**
+
+By default the hunters can't manipulate monsters. Even if a monster
+can talk and reason, it cannot be trusted to keep its word. You should
+certainly allow the hunters to make a deal with a monster, if they try
+to, but they do not get to roll **manipulate someone** and they certainly
+will not get a guarantee that the monster will hold up its end of the
+bargain. From the monster's point of view, hunters wanting to make
+a deal are probably in a weak position so this is a great opportunity to
+take advantage of them.
+
+The only exception is when a hunter move explicitly allows it
+(such as the Monstrous move **dark negotiator**). If a hunter has a
+move allowing this, then **manipulate** works as normal (although what
+a monster wants in return could be quite unpleasant).
+
+Minions may or may not be vulnerable to manipulation. If the
+minion is a normal human working for a monster, then hunters can
+manipulate them fine. The other extreme are minions who can't
+understand speech and may not be capable of making deals, such as
+brain-eating zombies or a malevolent fungus. Make decisions for the
+in-between cases as they come up, and remember that the minion
+might want something nasty in return for doing what the hunter asks.
+
+*Monster of the Week, Revised Edition - pages 190-192*

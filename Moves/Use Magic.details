@@ -1,3 +1,17 @@
+```
+When you use magic, say what you're trying to achieve and how
+you do the spell, then roll +Weird.
+
+* If you get a 10+, the magic works without issues: choose
+your effect.
+* On a 7-9, it works imperfectly: choose your effect and a
+glitch. The Keeper will decide what effect the glitch has.
+* On a miss, you lose control of the magic. This never ends well.
+By default the magic has one of the effects listed below, lasts for
+around thirty minutes, and does not expose you to danger, unwanted
+attention, or side-effects. If there's a glitch this might change.
+
+
 Effects:
 * Inflict harm (1-harm ignore-armour magic obvious).
 * Enchant a weapon. It gets +1 harm and +magic.
@@ -26,12 +40,13 @@ The Keeper may require one or more of the following:
 * The spell requires you to draw arcane symbols.
 * You need one or two people to help cast the spell.
 * You need to refer to a tome of magic for the details.
+```
 
-Magic, by its nature, breaks the rules. The use magic move lists the
+Magic, by its nature, breaks the rules. The **use magic** move lists the
 possible effects for magic spells. Magic that goes beyond these effects
-counts as big magic (see below).
+counts as **big magic** (see below).
 
-When a hunter uses magic, it's important to ask them what
+When a hunter **uses magic**, it's important to ask them what
 they're trying to do (and work out which of the effects they are trying
 for). Ask the hunter how they cast the spell, and what it looks like too.
 
@@ -44,12 +59,12 @@ two things including anything the hunter included in their description
 of casting the spell. You can offer alternatives, too, so that the hunter
 either takes one minute or needs arcane symbols, say.
 
-Partial successes when using magic mean that the hunter has to
+Partial successes when **using magic** mean that the hunter has to
 pick a glitch. Glitches are bad news, but it's up to the hunter to decide
 which one happens. Magic should always be dangerous and unpredictable,
 so hammer that home when you decide how the glitches take effect.
 
-On a miss using magic, make as hard a move as you like: anything
+On a miss **using magic**, make as hard a move as you like: anything
 can happen when magic goes wrong. Reversing the intended effect of
 the spell is an option, so that the exact opposite of what the hunter
 wanted happens. You can also go for off-the-wall weirdness: portals to
@@ -79,4 +94,6 @@ that determines how much power the hunters can get from everyday
 magic spells.
 
 If you think the desired effect is too powerful, tell them they
-would have to do it with by using a big magic ritual instead).
+would have to do it with by using a **big magic** ritual instead).
+
+*Monster of the Week, Revised Edition - pages 195-196*

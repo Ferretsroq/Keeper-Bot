@@ -1,8 +1,8 @@
 This is the basic fighting move, covering the back and forth of a short
 burst of fighting, rather than a single attack.
 
-By default when a hunter kicks ass both sides inflict harm as
-established—the hunter with their weapon and the enemy theirs. The
+By default when a hunter **kicks ass** both sides inflict harm as
+established-the hunter with their weapon and the enemy theirs. The
 precise amount of harm that's traded will depend on what’s happening
 at that moment in the fight.
 
