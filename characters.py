@@ -359,6 +359,27 @@ class CharacterMessage:
         self.embed.description = self.stats + '\n' + self.harm + '\n' + self.luck + '\n' + self.xp
         await self.message.edit(embed=self.embed)
         await self.SetReactions()
+    async def ShowImprovements(self):
+        self.embed.clear_fields()
+        self.embed.description = ''
+        improvementList = []
+        advancedList = []
+        for improvement in self.improvements:
+            if(improvement[1]):
+                emoji = xBox
+            else:
+                emoji = emptyBox
+            improvementList.append('{} {}'.format(emoji, self.character.manifest[improvement[0]]))
+        for advanced in self.advanced:
+            if(advanced[1]):
+                emoji = xBox
+            else:
+                emoji = emptyBox
+            advancedList.append('{} {}'.format(emoji, self.character.manifest[advanced[0]]))
+        self.embed.add_field(name='**Improvements**', value='\n'.join(improvementList))
+        self.embed.add_field(name='**Advanced**', value='\n'.join(advancedList))
+        await self.message.edit(embed=self.embed)
+        await self.SetReactions()
     async def PlaybookFields(self):
         pass
 
