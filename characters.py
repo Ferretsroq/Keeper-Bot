@@ -335,6 +335,8 @@ class CharacterMessage:
         self.harm = "**Harm:** " + str(xBox)*self.character.harm + str(emptyBox)*(7-self.character.harm)
         self.luck = "**Luck:** " + str(xBox)*self.character.luck + str(emptyBox)*(7-self.character.luck)
         self.xp = "**Experience:** " + str(xBox)*self.character.xp + str(emptyBox)*(5-self.character.xp)
+        self.improvements = self.character.improvements
+        self.advanced = self.character.advanced
         self.moves = '\n'.join(self.character.moves)
         self.helpText = ""
         self.embed.description = self.stats + '\n' + self.harm + '\n' + self.luck + '\n' + self.xp
@@ -354,6 +356,7 @@ class CharacterMessage:
         await self.message.add_reaction(mEmoji)
         await self.message.add_reaction(starEmoji)
         await self.message.add_reaction(toolsEmoji)
+        await self.message.add_reaction(upEmoji)
     async def ShowInfo(self):
         self.embed.clear_fields()
         self.embed.description = self.stats + '\n' + self.harm + '\n' + self.luck + '\n' + self.xp

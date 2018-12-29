@@ -178,6 +178,8 @@ async def on_reaction_add(reaction, user):
 						await message.ShowMoves()
 					elif(str(reaction) == characters.toolsEmoji):
 						pass
+					elif(str(reaction) == characters.upEmoji):
+						await message.ShowImprovements()
 
 if(__name__ == '__main__'):
 	bot.run(TOKEN)
