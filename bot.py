@@ -22,7 +22,6 @@ bot.wrongedMessage = None
 
 @bot.command()
 async def test(ctx, *, arg):
-	print(arg, arg1)
 	await ctx.send('You said {}'.format(arg))
 
 @bot.command()
