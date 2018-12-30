@@ -1,7 +1,9 @@
 import discord
 from discord.ext import commands
 import characters
-import moves
+import moves, notes
+import os, csv
+import random
 
 TOKEN = open('token.token').read()
 
@@ -21,8 +23,13 @@ bot.playbookMessages = {'Chosen': None,
 						'Spell-Slinger': None,
 						'Spooky': None,
 						'Wronged': None}
+bot.noteMessages = []
+bot.players = {111529517541036032: 'Chosen'}
+bot.characters = characters.LoadAllCharacters()
+bot.rollMessages = {}
 
 @bot.command()
+@commands.is_owner()
 async def allcharacters(ctx):
 	'''Sends all 12 character messages at once for debugging purposes'''
 	data, fields = characters.LoadCharacter('Chosen')
@@ -69,74 +76,74 @@ async def test(ctx, *, arg):
 
 @bot.command()
 async def chosen(ctx):
-	data, fields = characters.LoadCharacter('Chosen')
-	bot.playbookMessages['Chosen'] = characters.ChosenMessage(characters.Chosen(data, fields), ctx.author)
+	chosen = bot.characters['Chosen']
+	bot.playbookMessages['Chosen'] = characters.ChosenMessage(chosen, ctx.author)#characters.Chosen(data, fields), ctx.author)
 	await bot.playbookMessages['Chosen'].Send(ctx)
 
 @bot.command()
 async def crooked(ctx):
-	data, fields = characters.LoadCharacter('Crooked')
-	bot.playbookMessages['Crooked'] = characters.CrookedMessage(characters.Crooked(data, fields), ctx.author)
+	crooked = bot.characters['Crooked']
+	bot.playbookMessages['Crooked'] = characters.CrookedMessage(crooked, ctx.author)#characters.Crooked(data, fields), ctx.author)
 	await bot.playbookMessages['Crooked'].Send(ctx)
 
 @bot.command()
 async def divine(ctx):
-	data, fields = characters.LoadCharacter('Divine')
-	bot.playbookMessages['Divine'] = characters.DivineMessage(characters.Divine(data, fields), ctx.author)
+	divine = bot.characters['Divine']
+	bot.playbookMessages['Divine'] = characters.DivineMessage(divine, ctx.author)#characters.Divine(data, fields), ctx.author)
 	await bot.playbookMessages['Divine'].Send(ctx)
 
 @bot.command()
 async def expert(ctx):
-	data, fields = characters.LoadCharacter('Expert')
-	bot.playbookMessages['Expert'] = characters.ExpertMessage(characters.Expert(data, fields), ctx.author)
+	expert = bot.characters['Expert']
+	bot.playbookMessages['Expert'] = characters.ExpertMessage(expert, ctx.author)#characters.Expert(data, fields), ctx.author)
 	await bot.playbookMessages['Expert'].Send(ctx)
 
 @bot.command()
 async def flake(ctx):
-	data, fields = characters.LoadCharacter('Flake')
-	bot.playbookMessages['Flake'] = characters.FlakeMessage(characters.Flake(data, fields), ctx.author)
+	flake = bot.characters['Flake']
+	bot.playbookMessages['Flake'] = characters.FlakeMessage(flake, ctx.author)#characters.Flake(data, fields), ctx.author)
 	await bot.playbookMessages['Flake'].Send(ctx)
 
 @bot.command()
 async def initiate(ctx):
-	data, fields = characters.LoadCharacter('Initiate')
-	bot.playbookMessages['Initiate'] = characters.InitiateMessage(characters.Initiate(data, fields), ctx.author)
+	initiate = bot.characters['Initiate']
+	bot.playbookMessages['Initiate'] = characters.InitiateMessage(initiate, ctx.author)#characters.Initiate(data, fields), ctx.author)
 	await bot.playbookMessages['Initiate'].Send(ctx)
 
 @bot.command()
 async def monstrous(ctx):
-	data, fields = characters.LoadCharacter('Monstrous')
-	bot.playbookMessages['Monstrous'] = characters.MonstrousMessage(characters.Monstrous(data, fields), ctx.author)
+	monstrous = bot.characters['Monstrous']
+	bot.playbookMessages['Monstrous'] = characters.MonstrousMessage(monstrous, ctx.author)#characters.Monstrous(data, fields), ctx.author)
 	await bot.playbookMessages['Monstrous'].Send(ctx)
 
 @bot.command()
 async def mundane(ctx):
-	data, fields = characters.LoadCharacter('Mundane')
-	bot.playbookMessages['Mundane'] = characters.MundaneMessage(characters.Mundane(data, fields), ctx.author)
+	mundane = bot.characters['Mundane']
+	bot.playbookMessages['Mundane'] = characters.MundaneMessage(mundane, ctx.author)#characters.Mundane(data, fields), ctx.author)
 	await bot.playbookMessages['Mundane'].Send(ctx)
 
 @bot.command()
 async def professional(ctx):
-	data, fields = characters.LoadCharacter('Professional')
-	bot.playbookMessages['Professional'] = characters.ProfessionalMessage(characters.Professional(data, fields), ctx.author)
+	professional = bot.characters['Professional']
+	bot.playbookMessages['Professional'] = characters.ProfessionalMessage(professional, ctx.author)#characters.Professional(data, fields), ctx.author)
 	await bot.playbookMessages['Professional'].Send(ctx)
 
 @bot.command()
 async def spellslinger(ctx):
-	data, fields = characters.LoadCharacter('Spell-Slinger')
-	bot.playbookMessages['Spell-Slinger'] = characters.SpellSlingerMessage(characters.SpellSlinger(data, fields), ctx.author)
+	spellslinger = bot.characters['Spell-Slinger']
+	bot.playbookMessages['Spell-Slinger'] = characters.SpellSlingerMessage(spellslinger, ctx.author)#characters.SpellSlinger(data, fields), ctx.author)
 	await bot.playbookMessages['Spell-Slinger'].Send(ctx)
 
 @bot.command()
 async def spooky(ctx):
-	data, fields = characters.LoadCharacter('Spooky')
-	bot.playbookMessages['Spooky'] = characters.SpookyMessage(characters.Spooky(data, fields), ctx.author)
+	spooky = bot.characters['Spooky']
+	bot.playbookMessages['Spooky'] = characters.SpookyMessage(spooky, ctx.author)#characters.Spooky(data, fields), ctx.author)
 	await bot.playbookMessages['Spooky'].Send(ctx)
 
 @bot.command()
 async def wronged(ctx):
-	data, fields = characters.LoadCharacter('Wronged')
-	bot.playbookMessages['Wronged'] = characters.WrongedMessage(characters.Wronged(data, fields), ctx.author)
+	wronged = bot.characters['Wronged']
+	bot.playbookMessages['Wronged'] = characters.WrongedMessage(wronged, ctx.author)#characters.Wronged(data, fields), ctx.author)
 	await bot.playbookMessages['Wronged'].Send(ctx)
 
 
@@ -147,6 +154,85 @@ async def move(ctx):
 	await bot.moveMessage.Send(ctx.channel)
 
 @bot.command()
+async def additem(ctx, *, arg):
+	'''Add an item to the inventory of your character.'''
+	if(ctx.author.id in bot.players):
+		characterName = bot.players[ctx.author.id]
+		if(characterName+'.csv' in os.listdir('./Character Stuff/Inventories')):
+			inventoryFile = open('./Character Stuff/Inventories/'+characterName+'.csv', 'a')
+			writer = csv.writer(inventoryFile)
+			writer.writerow([arg])
+			inventoryFile.close()
+			await ctx.send('Added item `{}` to `{}`'.format(arg, characterName))
+		else:
+			await ctx.send('Character `{}` inventory not found.'.format(characterName))
+	else:
+		await ctx.send('No character found for user id `{}`'.format(ctx.author.id))
+
+@bot.command()
+async def addnote(ctx, *, arg):
+	'''Add a note to the notes of your character.'''
+	if(ctx.author.id in bot.players):
+		characterName = bot.players[ctx.author.id]
+		if(characterName+'.csv' in os.listdir('./Character Stuff/Notes')):
+			notesFile = open('./Character Stuff/Notes/'+characterName+'.csv', 'a')
+			writer = csv.writer(notesFile)
+			writer.writerow([arg])
+			notesFile.close()
+			await ctx.send('Added note `{}` to `{}`'.format(arg, characterName))
+		else:
+			await ctx.send('Character `{}` notes not found.'.format(characterName))
+	else:
+		await ctx.send('No character found for user id `{}`'.format(ctx.author.id))
+
+@bot.command(name='notes')
+async def shownotes(ctx, arg=None):
+	'''Show notes you've taken for your character. Only usable by people with characters.'''
+	if(arg == None):
+		if(ctx.author.id in bot.players):
+			characterName = bot.players[ctx.author.id]
+			if(characterName+'.csv' in os.listdir('./Character Stuff/Notes')):
+				if(len(bot.noteMessages) >= 10):
+					bot.noteMessages.pop(0)
+				while(len([message for message in bot.noteMessages if message.user == ctx.author]) != 0):
+					for index in range(len(bot.noteMessages)):
+						if(bot.noteMessages[index].user == ctx.author):
+							bot.noteMessages.pop(index)
+							break
+				bot.noteMessages.append(notes.NotesMessage(ctx.author, characterName))
+				await bot.noteMessages[-1].Send(ctx.channel)
+	else:
+		for message in bot.noteMessages:
+			if(message.user == ctx.author):
+				if(arg.isdigit()):
+					if(int(arg) <= len(message.notes) and int(arg) > 0):
+						await message.GoToNumber(int(arg))
+
+@bot.command()
+async def roll(ctx, *, arg=''):
+	'''Roll for your character. Only usable by people with characters. Use emoji to select a stat, or the die to roll with no stat.'''
+	if(ctx.author.id in bot.players):
+		character = bot.characters[bot.players[ctx.author.id]]
+		if(ctx.author.id in bot.rollMessages):
+			bot.rollMessages.pop(ctx.author.id)
+		bot.rollMessages[ctx.author.id] = moves.RollMessage(ctx.author, character, arg)
+		await bot.rollMessages[ctx.author.id].Send(ctx.channel)
+
+@bot.command()
+@commands.is_owner()
+async def harm(ctx, character, harmNumber):
+	if(character.title() in bot.characters):
+		if(harmNumber.lstrip('-').isdigit()):
+			bot.characters[character.title()].TakeHarm(int(harmNumber))
+			await ctx.send('`{}` harm added to `{}`, current harm {}/7'.format(harmNumber, character.title(), bot.characters[character.title()].harm))
+		else:
+			await ctx.send("I'm just a bot, I can't figure out how `{}` is a number.".format(harmNumber))
+	else:
+		await ctx.send("Character `{}` not found.".format(character.title()))
+
+
+@bot.command()
+@commands.is_owner()
 async def logout(ctx):
 	await bot.logout()
 	await bot.close()
@@ -177,9 +263,24 @@ async def on_reaction_add(reaction, user):
 					elif(str(reaction) == characters.mEmoji):
 						await message.ShowMoves()
 					elif(str(reaction) == characters.toolsEmoji):
-						pass
+						await message.ShowInventory()
 					elif(str(reaction) == characters.upEmoji):
 						await message.ShowImprovements()
+		for noteMessage in bot.noteMessages:
+			if(reaction.message.id == noteMessage.message.id and noteMessage.user == user):
+				if(str(reaction) == notes.arrowLeft):
+					await noteMessage.Back()
+				elif(str(reaction) == notes.arrowRight):
+					await noteMessage.Advance()
+				elif(str(reaction) == notes.questionMark):
+					await noteMessage.ShowHelp()
+		if(user.id in bot.rollMessages):
+			if(reaction.message.id == bot.rollMessages[user.id].message.id and bot.rollMessages[user.id].user == user):
+				if(str(reaction) in moves.statEmoji):
+					await bot.rollMessages[user.id].OnStatPick(str(reaction))
+				elif(str(reaction) == moves.dieEmoji):
+					await bot.rollMessages[user.id].OnStatPick()
+				bot.rollMessages.pop(user.id)
 
 if(__name__ == '__main__'):
 	bot.run(TOKEN)

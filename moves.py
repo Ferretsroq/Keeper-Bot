@@ -2,6 +2,7 @@ import os
 import discord
 import json
 import asyncio
+import random
 
 arrowLeft = chr(0x2B05)
 arrowRight = chr(0x27A1)
@@ -17,6 +18,18 @@ emojiNumbers = ['0\u20e3',
 				'7\u20e3',
 				'8\u20e3',
 				'9\u20e3']
+dieEmoji = chr(0x1F3B2)
+charm = '<:charm:529025449582395402>'
+cool = '<:cool:529025448886140941>'
+sharp = '<:sharp:529025449028878356>'
+tough = '<:tough:529025448626094102>'
+weird = '<:weird:529025448936734761>'
+charmID = 529025449582395402
+coolID = 529025448886140941
+sharpID = 529025449028878356
+toughID = 529025448626094102
+weirdID = 529025448936734761
+statEmoji = [charm, cool, sharp, tough, weird]
 
 movesDirectory = './Moves/'
 
@@ -53,7 +66,6 @@ class MovesMessage:
 			else:
 				fileType = '.move'
 			dataFile = open(movesDirectory + move + fileType)
-			#data = dataFile.read()[:2000]
 			data = dataFile.read()
 			dataFile.close()
 			self.embed.title = self.moves[self.index]
@@ -91,3 +103,43 @@ class MovesMessage:
 		self.embed.title = "Basic Hunter Moves"
 		self.embed.description = '\n'.join(['{}: {}'.format(index, self.moves[index]) for index in range(len(self.moves))])
 		await self.Edit(listing=True)
+
+class RollMessage:
+	def __init__(self, user, character, arg=''):
+		self.user = user
+		self.character = character
+		self.embed = discord.Embed()
+		if(arg != ''):
+			self.embed.title = 'Roll for {} - {}'.format(character['name'], arg)
+		else:
+			self.embed.title = 'Roll for {}'.format(character['name'])
+		self.embed.description = 'Select a stat to roll with that stat, or select the die to roll with no stat.'
+		self.message = None
+		self.index = 0
+		self.die1 = random.randint(1,6)
+		self.die2 = random.randint(1,6)
+		self.roll = self.die1 + self.die2 #2d6 for all rolls
+		self.result = self.roll
+		self.statName = ''
+	async def Send(self, channel):
+		self.message = await channel.send(embed=self.embed)
+		await self.SetReactions()
+	async def SetReactions(self):
+		emojis = list(self.message.guild.emojis) # Hooooooooly shit reactions are the dumbest fucking thing, I am so fucking mad right now
+		await self.message.clear_reactions()
+		await self.message.add_reaction(emojis[next(index for index,emoji in enumerate(emojis) if emoji.id==charmID)])
+		await self.message.add_reaction(emojis[next(index for index,emoji in enumerate(emojis) if emoji.id==coolID)])
+		await self.message.add_reaction(emojis[next(index for index,emoji in enumerate(emojis) if emoji.id==sharpID)])
+		await self.message.add_reaction(emojis[next(index for index,emoji in enumerate(emojis) if emoji.id==toughID)])
+		await self.message.add_reaction(emojis[next(index for index,emoji in enumerate(emojis) if emoji.id==weirdID)])
+		await self.message.add_reaction(dieEmoji)
+	async def OnStatPick(self, stat=None):
+		if(stat):
+			self.statName = str(stat).split(':')[1] # discord emoji follow the form <:NAME:ID>
+			statValue = int(self.character[self.statName])
+			self.result += statValue
+		await self.ReportResult()
+	async def ReportResult(self):
+		self.embed.description = "You rolled **{}**\n(({}+{}) + {} for stat {})".format(self.result, self.die1, self.die2, self.character[self.statName], self.statName)
+		await self.message.edit(embed=self.embed)
+		await self.message.clear_reactions()

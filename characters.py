@@ -2,6 +2,8 @@ import PyPDF2 as pdf
 import json
 import discord
 from discord.ext import commands
+import os
+import csv
 
 emptyBox = chr(0x2610)
 xBox = chr(0x2612)
@@ -11,6 +13,16 @@ listEmoji = chr(0x1f4dc)
 toolsEmoji = chr(0x1F6E0)
 upEmoji = chr(0x23EB)
 
+playbooks = ['Chosen', 'Crooked', 'Divine', 'Expert', 'Flake', 'Initiate', 'Monstrous', 'Mundane', 'Professional', 'Spell-Slinger', 'Spooky', 'Wronged']
+
+def LoadAllCharacters():
+    playbookClasses = [Chosen, Crooked, Divine, Expert, Flake, Initiate, Monstrous, Mundane, Professional, SpellSlinger, Spooky, Wronged]
+    characters = {}
+    for playbook in playbookClasses:
+        data, fields = LoadCharacter(playbook.Playbook())
+        character = playbook(data, fields)
+        characters[playbook.Playbook()] = character
+    return characters
 
 
 class Character:
@@ -30,6 +42,10 @@ class Character:
         self.tough = self.fields['tough']
         self.weird = self.fields['weird']
         self.improvements, self.advanced = self.PopulateImprovements()
+        self.inventory = self.Inventory()
+        self.playbook = ''
+    def Playbook():
+        return ''
     def __repr__(self):
         reprString = ''
         for field in self.fields:
@@ -58,6 +74,22 @@ class Character:
                 else:
                     advanced.append((item, False))
         return improvements, advanced
+    def Inventory(self):
+        if(self.fields['name'].title()+'.csv' in os.listdir('./Character Stuff/Inventories/')):
+            inventoryFile = open('./Character Stuff/Inventories/'+self.fields['name'].title()+'.csv')
+            reader = csv.reader(inventoryFile)
+            inventoryList = []
+            for row in list(reader):
+                inventoryList += row
+            return inventoryList
+        else:
+            return []
+    def TakeHarm(self, harm):
+        self.harm += harm
+        if(self.harm > 7):
+            self.harm = 7
+        if(self.harm < 0):
+            self.harm = 0
 
 class Chosen(Character):
     def __init__(self, manifest, sheetFields):
@@ -65,6 +97,9 @@ class Chosen(Character):
         self.moves.append(self.manifest['move5'])
         self.moves.append(self.manifest['move6'])
         self.weapon = self.SetWeapon()
+        self.playbook = 'Chosen'
+    def Playbook():
+        return 'Chosen'
     def SetWeapon(self):
         forms = [form for form in self.fields if form.startswith('form')]
         if(forms != []):
@@ -116,7 +151,7 @@ class Chosen(Character):
             endNames.append('chain')
             tags.append('area')
         tags.append('{}-harm'.format(harm))
-        return '**{} {}** form with {} ({})'.format(self.fields['material'].title(), name.title(), ', '.join(endNames), ', '.join(tags))
+        return '**{} {}** form with {} ({})'.format(self.fields['material'].title(), name.title(), ', '.join(endNames), ' '.join(tags))
 
 class Crooked(Character):
     def __init__(self, manifest, sheetFields):
@@ -124,6 +159,9 @@ class Crooked(Character):
         self.heat = self.FillHeat()
         self.underworld = self.manifest[[field for field in self.fields if field.startswith('underworld')][0]]
         self.background = self.manifest[[field for field in self.fields if field.startswith('background')][0]]
+        self.playbook = 'Crooked'
+    def Playbook():
+        return 'Crooked'
     def FillHeat(self):
         # Populate the heat based on what the player has input
         heatText = [heat for heat in self.fields if heat.startswith('heatText')]
@@ -138,27 +176,42 @@ class Divine(Character):
         Character.__init__(self, manifest, sheetFields)
         self.mission = self.manifest[[field for field in self.fields if field.startswith('mission')][0]]
         self.weapon = self.manifest[[field for field in self.fields if field.startswith('gear')][0]]
+        self.playbook = 'Divine'
+    def Playbook():
+        return 'Divine'
 
 class Expert(Character):
     def __init__(self, manifest, sheetFields):
         Character.__init__(self, manifest, sheetFields)
         self.haven = [self.manifest[field] for field in self.fields if field.startswith('haven')]
+        self.playbook = 'Expert'
+    def Playbook():
+        return 'Expert'
 
 class Flake(Character):
     def __init__(self, manifest, sheetFields):
         Character.__init__(self, manifest, sheetFields)
+        self.playbook = 'Flake'
+    def Playbook():
+        return 'Flake'
 
 class Initiate(Character):
     def __init__(self, manifest, sheetFields):
         Character.__init__(self, manifest, sheetFields)
         self.good = [self.manifest[field] for field in self.fields if field.startswith('good')]
         self.bad = [self.manifest[field] for field in self.fields if field.startswith('bad')]
+        self.playbook = 'Initiate'
+    def Playbook():
+        return 'Initiate'
 
 class Monstrous(Character):
     def __init__(self, manifest, sheetFields):
         Character.__init__(self, manifest, sheetFields)
         self.attacks = self.NaturalAttack()
         self.curse = [self.manifest[field] for field in self.fields if field.startswith('curse')][0]
+        self.playbook = 'Monstrous'
+    def Playbook():
+        return 'Monstrous'
     def NaturalAttack(self):
         bases = [base for base in self.fields if base.startswith('base')]
         extras = [extra for extra in self.fields if extra.startswith('extra')]
@@ -207,18 +260,27 @@ class MonstrousAttack:
 class Mundane(Character):
     def __init__(self, manifest, sheetFields):
         Character.__init__(self, manifest, sheetFields)
+        self.playbook = 'Mundane'
+    def Playbook():
+        return 'Mundane'
 
 class Professional(Character):
     def __init__(self, manifest, sheetFields):
         Character.__init__(self, manifest, sheetFields)
         self.resources = [self.manifest[field] for field in self.fields if field.startswith('resource')]
         self.redtape = [self.manifest[field] for field in self.fields if field.startswith('redtape')]
+        self.playbook = 'Professional'
+    def Playbook():
+        return 'Professional'
 
 class SpellSlinger(Character):
     def __init__(self, manifest, sheetFields):
         Character.__init__(self, manifest, sheetFields)
         self.techniques = self.Techniques()
         self.combatMagic = self.CombatMagic()
+        self.playbook = 'Spell-Slinger'
+    def Playbook():
+        return 'Spell-Slinger'
     def Techniques(self):
         # Check the 3 that you do use, leave the one you don't need blank
         techniques = [self.manifest[technique] for technique in self.fields if technique.startswith('technique')]
@@ -295,6 +357,9 @@ class Spooky(Character):
     def __init__(self, manifest, sheetFields):
         Character.__init__(self, manifest, sheetFields)
         self.darkside = [self.manifest[dark] for dark in self.fields if dark.startswith('darkside')]
+        self.playbook = 'Spooky'
+    def Playbook():
+        return 'Spooky'
 
 class Wronged(Character):
     def __init__(self, manifest, sheetFields):
@@ -303,6 +368,9 @@ class Wronged(Character):
         self.prey = self.fields['prey']
         self.guilt = [self.manifest[field] for field in self.fields if field.startswith('save')]
         self.signatureWeapon = [self.manifest[field] for field in self.fields if field.startswith('signature')]
+        self.playbook = 'Wronged'
+    def Playbook():
+        return 'Wronged'
     def Loss(self):
         losses = [loss for loss in self.fields if loss.startswith('lost') and not loss.startswith('lostText')]
         lossesText = [loss for loss in self.fields if loss.startswith('lostText')]
@@ -385,6 +453,15 @@ class CharacterMessage:
         await self.SetReactions()
     async def PlaybookFields(self):
         pass
+    async def ShowInventory(self):
+        self.embed.clear_fields()
+        self.embed.description = ''
+        if(len(self.character.inventory) > 0):
+            self.embed.add_field(name="**Inventory**", value='\n'.join(self.character.inventory))
+        else:
+            self.embed.add_field(name="**Inventory**", value='you have no items lol')
+        await self.message.edit(embed=self.embed)
+        await self.SetReactions()
 
 class ChosenMessage(CharacterMessage):
     def __init__(self, character, user):
