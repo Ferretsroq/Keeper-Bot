@@ -36,7 +36,7 @@ movesDirectory = './Moves/'
 
 class MovesMessage:
 	def __init__(self, user):
-		self.moves = [move.split('.')[0] for move in os.listdir(movesDirectory) if move.endswith('.move')]
+		self.moves = sorted([move.split('.')[0] for move in os.listdir(movesDirectory) if move.endswith('.move')])
 		self.embed = discord.Embed()
 		self.message = None
 		self.index = 0

@@ -22,10 +22,17 @@ bot.playbookMessages = {'Chosen': None,
 						'Professional': None,
 						'Spell-Slinger': None,
 						'Spooky': None,
-						'Wronged': None}
+						'Wronged': None,
+						'Dominic': None,
+						'Reinard': None,
+						'Naomi': None}
+bot.playerCharacters = [('Dominic', characters.Chosen), ('Reinard', characters.Flake), ('Naomi', characters.Expert)]
 bot.noteMessages = []
-bot.players = {111529517541036032: 'Chosen'}
-bot.characters = characters.LoadAllCharacters()
+bot.players = {133328216466259968: 'Dominic',
+			   111529517541036032: 'Spooky',
+			   448613063713751042: 'Reinard',
+			   449619391005327361: 'Naomi'}
+bot.characters = characters.LoadAllCharacters(bot.playerCharacters)
 bot.rollMessages = {}
 
 @bot.command()
@@ -146,6 +153,24 @@ async def wronged(ctx):
 	bot.playbookMessages['Wronged'] = characters.WrongedMessage(wronged, ctx.author)#characters.Wronged(data, fields), ctx.author)
 	await bot.playbookMessages['Wronged'].Send(ctx)
 
+@bot.command()
+async def dominic(ctx):
+	dominic = bot.characters['Dominic']
+	bot.playbookMessages['Dominic'] = characters.ChosenMessage(dominic, ctx.author)
+	await bot.playbookMessages['Dominic'].Send(ctx)
+
+@bot.command()
+async def reinard(ctx):
+	reinard = bot.characters['Reinard']
+	bot.playbookMessages['Reinard'] = characters.FlakeMessage(reinard, ctx.author)
+	await bot.playbookMessages['Reinard'].Send(ctx)
+
+@bot.command()
+async def naomi(ctx):
+	naomi = bot.characters['Naomi']
+	bot.playbookMessages['Naomi'] = characters.ExpertMessage(naomi, ctx.author)
+	await bot.playbookMessages['Naomi'].Send(ctx)
+
 
 @bot.command(name='moves')
 async def move(ctx):
@@ -209,13 +234,13 @@ async def shownotes(ctx, arg=None):
 						await message.GoToNumber(int(arg))
 
 @bot.command()
-async def roll(ctx, *, arg=''):
+async def roll(ctx, *, comment=''):
 	'''Roll for your character. Only usable by people with characters. Use emoji to select a stat, or the die to roll with no stat.'''
 	if(ctx.author.id in bot.players):
 		character = bot.characters[bot.players[ctx.author.id]]
 		if(ctx.author.id in bot.rollMessages):
 			bot.rollMessages.pop(ctx.author.id)
-		bot.rollMessages[ctx.author.id] = moves.RollMessage(ctx.author, character, arg)
+		bot.rollMessages[ctx.author.id] = moves.RollMessage(ctx.author, character, comment)
 		await bot.rollMessages[ctx.author.id].Send(ctx.channel)
 
 @bot.command()
@@ -229,6 +254,8 @@ async def harm(ctx, character, harmNumber):
 			await ctx.send("I'm just a bot, I can't figure out how `{}` is a number.".format(harmNumber))
 	else:
 		await ctx.send("Character `{}` not found.".format(character.title()))
+
+
 
 
 @bot.command()

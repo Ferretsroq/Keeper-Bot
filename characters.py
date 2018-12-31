@@ -15,23 +15,52 @@ upEmoji = chr(0x23EB)
 
 playbooks = ['Chosen', 'Crooked', 'Divine', 'Expert', 'Flake', 'Initiate', 'Monstrous', 'Mundane', 'Professional', 'Spell-Slinger', 'Spooky', 'Wronged']
 
-def LoadAllCharacters():
+def LoadAllCharacters(playerCharacters=[]):
     playbookClasses = [Chosen, Crooked, Divine, Expert, Flake, Initiate, Monstrous, Mundane, Professional, SpellSlinger, Spooky, Wronged]
     characters = {}
     for playbook in playbookClasses:
         data, fields = LoadCharacter(playbook.Playbook())
         character = playbook(data, fields)
         characters[playbook.Playbook()] = character
+    for playerCharacter in playerCharacters:
+        data, fields = LoadCharacter(playbook=playerCharacter[1].Playbook(), sheetPath='./Character Stuff/Playtest1Characters/', name=playerCharacter[0])
+        character = playerCharacter[1](data, fields, alias=playerCharacter[0])
+        characters[playerCharacter[0]] = character
     return characters
 
 
+def LoadCharacter(playbook='Chosen', sheetPath='./Character Stuff/Demo Characters/', name=None):
+    #sheetPath = './Character Stuff/Demo Characters/'
+    fieldPath = './Character Stuff/Field Data/'
+    if(name == None):
+        name = 'The_{}'.format(playbook)
+    #pdfFileObj = open(sheetPath+'The_{}.pdf'.format(playbook), 'rb')
+    pdfFileObj = open(sheetPath+'{}.pdf'.format(name), 'rb')
+    pdfReader = pdf.PdfFileReader(pdfFileObj)
+    fields = pdfReader.getFields()
+    blankBoxes = []
+    for field in fields:
+        if(fields[field]['/FT'] == '/Btn' and '/V' in fields[field] and fields[field]['/V'] == '/Off'):
+            blankBoxes.append(field)
+    for blank in blankBoxes:
+        fields.pop(blank)
+    fieldData = open(fieldPath+'{} Fields.json'.format(playbook))
+    data = json.load(fieldData)
+    fieldData.close()
+    pdfFileObj.close()
+    return data,fields
+
 class Character:
-    def __init__(self, manifest, sheetFields):
+    def __init__(self, manifest, sheetFields, alias=''):
         self.manifest = manifest
         self.fields = {}
         for field in sheetFields:
             if('/V' in sheetFields[field]):
                 self.fields[field] = sheetFields[field]['/V']
+        if(alias != ''):
+            self.alias = alias
+        else:
+            self.alias = self.fields['name']
         self.moves = [self.manifest[move] for move in self.fields if move.startswith('move')]
         self.harm = len([field for field in self.fields if field.startswith('harm')])
         self.luck = len([field for field in self.fields if field.startswith('luck')])
@@ -75,8 +104,10 @@ class Character:
                     advanced.append((item, False))
         return improvements, advanced
     def Inventory(self):
-        if(self.fields['name'].title()+'.csv' in os.listdir('./Character Stuff/Inventories/')):
-            inventoryFile = open('./Character Stuff/Inventories/'+self.fields['name'].title()+'.csv')
+        #if(self.fields['name'].title()+'.csv' in os.listdir('./Character Stuff/Inventories/')):
+        if(self.alias.title()+'.csv' in os.listdir('./Character Stuff/Inventories/')):
+            #inventoryFile = open('./Character Stuff/Inventories/'+self.fields['name'].title()+'.csv')
+            inventoryFile = open('./Character Stuff/Inventories/'+self.alias.title()+'.csv')
             reader = csv.reader(inventoryFile)
             inventoryList = []
             for row in list(reader):
@@ -92,8 +123,8 @@ class Character:
             self.harm = 0
 
 class Chosen(Character):
-    def __init__(self, manifest, sheetFields):
-        Character.__init__(self, manifest, sheetFields)
+    def __init__(self, manifest, sheetFields, alias=''):
+        Character.__init__(self, manifest, sheetFields, alias)
         self.moves.append(self.manifest['move5'])
         self.moves.append(self.manifest['move6'])
         self.weapon = self.SetWeapon()
@@ -154,8 +185,8 @@ class Chosen(Character):
         return '**{} {}** form with {} ({})'.format(self.fields['material'].title(), name.title(), ', '.join(endNames), ' '.join(tags))
 
 class Crooked(Character):
-    def __init__(self, manifest, sheetFields):
-        Character.__init__(self, manifest, sheetFields)
+    def __init__(self, manifest, sheetFields, alias=''):
+        Character.__init__(self, manifest, sheetFields, alias)
         self.heat = self.FillHeat()
         self.underworld = self.manifest[[field for field in self.fields if field.startswith('underworld')][0]]
         self.background = self.manifest[[field for field in self.fields if field.startswith('background')][0]]
@@ -172,8 +203,8 @@ class Crooked(Character):
         return returnHeat
 
 class Divine(Character):
-    def __init__(self, manifest, sheetFields):
-        Character.__init__(self, manifest, sheetFields)
+    def __init__(self, manifest, sheetFields, alias=''):
+        Character.__init__(self, manifest, sheetFields, alias)
         self.mission = self.manifest[[field for field in self.fields if field.startswith('mission')][0]]
         self.weapon = self.manifest[[field for field in self.fields if field.startswith('gear')][0]]
         self.playbook = 'Divine'
@@ -181,23 +212,23 @@ class Divine(Character):
         return 'Divine'
 
 class Expert(Character):
-    def __init__(self, manifest, sheetFields):
-        Character.__init__(self, manifest, sheetFields)
+    def __init__(self, manifest, sheetFields, alias=''):
+        Character.__init__(self, manifest, sheetFields, alias)
         self.haven = [self.manifest[field] for field in self.fields if field.startswith('haven')]
         self.playbook = 'Expert'
     def Playbook():
         return 'Expert'
 
 class Flake(Character):
-    def __init__(self, manifest, sheetFields):
-        Character.__init__(self, manifest, sheetFields)
+    def __init__(self, manifest, sheetFields, alias=''):
+        Character.__init__(self, manifest, sheetFields, alias)
         self.playbook = 'Flake'
     def Playbook():
         return 'Flake'
 
 class Initiate(Character):
-    def __init__(self, manifest, sheetFields):
-        Character.__init__(self, manifest, sheetFields)
+    def __init__(self, manifest, sheetFields, alias=''):
+        Character.__init__(self, manifest, sheetFields, alias)
         self.good = [self.manifest[field] for field in self.fields if field.startswith('good')]
         self.bad = [self.manifest[field] for field in self.fields if field.startswith('bad')]
         self.playbook = 'Initiate'
@@ -205,8 +236,8 @@ class Initiate(Character):
         return 'Initiate'
 
 class Monstrous(Character):
-    def __init__(self, manifest, sheetFields):
-        Character.__init__(self, manifest, sheetFields)
+    def __init__(self, manifest, sheetFields, alias=''):
+        Character.__init__(self, manifest, sheetFields, alias)
         self.attacks = self.NaturalAttack()
         self.curse = [self.manifest[field] for field in self.fields if field.startswith('curse')][0]
         self.playbook = 'Monstrous'
@@ -258,15 +289,15 @@ class MonstrousAttack:
         return 'Base: {} ({}-harm {})'.format(self.base, self.harm, ' '.join(self.tags))
 
 class Mundane(Character):
-    def __init__(self, manifest, sheetFields):
-        Character.__init__(self, manifest, sheetFields)
+    def __init__(self, manifest, sheetFields, alias=''):
+        Character.__init__(self, manifest, sheetFields, alias)
         self.playbook = 'Mundane'
     def Playbook():
         return 'Mundane'
 
 class Professional(Character):
-    def __init__(self, manifest, sheetFields):
-        Character.__init__(self, manifest, sheetFields)
+    def __init__(self, manifest, sheetFields, alias=''):
+        Character.__init__(self, manifest, sheetFields, alias)
         self.resources = [self.manifest[field] for field in self.fields if field.startswith('resource')]
         self.redtape = [self.manifest[field] for field in self.fields if field.startswith('redtape')]
         self.playbook = 'Professional'
@@ -274,8 +305,8 @@ class Professional(Character):
         return 'Professional'
 
 class SpellSlinger(Character):
-    def __init__(self, manifest, sheetFields):
-        Character.__init__(self, manifest, sheetFields)
+    def __init__(self, manifest, sheetFields, alias=''):
+        Character.__init__(self, manifest, sheetFields, alias)
         self.techniques = self.Techniques()
         self.combatMagic = self.CombatMagic()
         self.playbook = 'Spell-Slinger'
@@ -354,16 +385,16 @@ class CombatSpell:
         return 'Base: {} ({}) ({}-harm {})'.format(self.base,', '.join(self.effects), self.harm, ' '.join(self.tags))
 
 class Spooky(Character):
-    def __init__(self, manifest, sheetFields):
-        Character.__init__(self, manifest, sheetFields)
+    def __init__(self, manifest, sheetFields, alias=''):
+        Character.__init__(self, manifest, sheetFields, alias)
         self.darkside = [self.manifest[dark] for dark in self.fields if dark.startswith('darkside')]
         self.playbook = 'Spooky'
     def Playbook():
         return 'Spooky'
 
 class Wronged(Character):
-    def __init__(self, manifest, sheetFields):
-        Character.__init__(self, manifest, sheetFields)
+    def __init__(self, manifest, sheetFields, alias=''):
+        Character.__init__(self, manifest, sheetFields, alias)
         self.lost = self.Loss()
         self.prey = self.fields['prey']
         self.guilt = [self.manifest[field] for field in self.fields if field.startswith('save')]
@@ -380,6 +411,7 @@ class Wronged(Character):
             yourLosses = ['I think you filled this out wrong.']
         return yourLosses
 
+'''
 def LoadCharacter(playbook='Chosen'):
     sheetPath = './Character Stuff/Demo Characters/'
     fieldPath = './Character Stuff/Field Data/'
@@ -391,7 +423,7 @@ def LoadCharacter(playbook='Chosen'):
     fieldData.close()
     pdfFileObj.close()
     return data,fields
-
+'''
 
 class CharacterMessage:
     def __init__(self, character, user):
@@ -456,6 +488,7 @@ class CharacterMessage:
     async def ShowInventory(self):
         self.embed.clear_fields()
         self.embed.description = ''
+        self.character.inventory = self.character.Inventory()
         if(len(self.character.inventory) > 0):
             self.embed.add_field(name="**Inventory**", value='\n'.join(self.character.inventory))
         else:
