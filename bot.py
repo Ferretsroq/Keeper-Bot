@@ -4,6 +4,7 @@ import characters
 import moves, notes
 import os, csv
 import random
+import asyncio
 
 TOKEN = open('token.token').read()
 
@@ -32,7 +33,8 @@ bot.players = {133328216466259968: 'Dominic',
 			   111529517541036032: 'Spooky',
 			   448613063713751042: 'Reinard',
 			   449619391005327361: 'Naomi'}
-bot.characters = characters.LoadAllCharacters(bot.playerCharacters)
+#bot.characters = characters.LoadAllCharacters(bot.playerCharacters)
+bot.characters = characters.LoadAllCharactersFromJSON(bot.playerCharacters)
 bot.rollMessages = {}
 
 @bot.command()
@@ -257,6 +259,30 @@ async def harm(ctx, character, harmNumber):
 
 @bot.command()
 @commands.is_owner()
+async def xp(ctx, character, xpNumber):
+	if(character.title() in bot.characters):
+		if(xpNumber.lstrip('-').isdigit()):
+			bot.characters[character.title()].MarkXP(int(xpNumber))
+			await ctx.send('`{}` xp added to `{}`, current xp {}/5'.format(xpNumber, character.title(), bot.characters[character.title()].xp))
+		else:
+			await ctx.send("I'm just a bot, I can't figure out how `{}` is a number.".format(xpNumber))
+	else:
+		await ctx.send("Character `{}` not found.".format(character.title()))
+
+@bot.command()
+@commands.is_owner()
+async def luck(ctx, character, luckNumber):
+	if(character.title() in bot.characters):
+		if(luckNumber.lstrip('-').isdigit()):
+			bot.characters[character.title()].MarkLuck(int(luckNumber))
+			await ctx.send('`{}` luck added to `{}`, current luck {}/7'.format(luckNumber, character.title(), bot.characters[character.title()].luck))
+		else:
+			await ctx.send("I'm just a bot, I can't figure out how `{}` is a number.".format(luckNumber))
+	else:
+		await ctx.send("Character `{}` not found.".format(character.title()))
+
+@bot.command()
+@commands.is_owner()
 async def teaser(ctx):
 	embed = discord.Embed(title='Teaser')
 	textFile = open('./Embed Data/Teaser.txt')
@@ -319,5 +345,14 @@ async def on_reaction_add(reaction, user):
 					await bot.rollMessages[user.id].OnStatPick()
 				bot.rollMessages.pop(user.id)
 
+async def save_characters():
+	await bot.wait_until_ready()
+	while True:
+		print('Saving Characters')
+		for character in bot.characters:
+			bot.characters[character].Save()
+		await asyncio.sleep(60)
+
 if(__name__ == '__main__'):
+	bot.loop.create_task(save_characters())
 	bot.run(TOKEN)

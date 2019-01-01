@@ -20,13 +20,37 @@ def LoadAllCharacters(playerCharacters=[]):
     characters = {}
     for playbook in playbookClasses:
         data, fields = LoadCharacter(playbook.Playbook())
-        character = playbook(data, fields)
+        character = playbook(data, fields, alias=playbook.Playbook())
         characters[playbook.Playbook()] = character
     for playerCharacter in playerCharacters:
         data, fields = LoadCharacter(playbook=playerCharacter[1].Playbook(), sheetPath='./Character Stuff/Playtest1Characters/', name=playerCharacter[0])
         character = playerCharacter[1](data, fields, alias=playerCharacter[0])
         characters[playerCharacter[0]] = character
     return characters
+
+def LoadAllCharactersFromJSON(playerCharacters=[]):
+    playbookClasses = [Chosen, Crooked, Divine, Expert, Flake, Initiate, Monstrous, Mundane, Professional, SpellSlinger, Spooky, Wronged]
+    characters = {}
+    for playbook in playbookClasses:
+        manifestFile = open('./Character Stuff/Field Data/{} Fields.json'.format(playbook.Playbook()), 'r')
+        manifest = json.load(manifestFile)
+        manifestFile.close()
+        fieldsFile = open('./Character Stuff/Playtest1Characters/{}.json'.format(playbook.Playbook()), 'r')
+        fields = json.load(fieldsFile)
+        fieldsFile.close()
+        characters[playbook.Playbook()] = playbook(manifest, fields, alias=playbook.Playbook())
+    for playerCharacter in playerCharacters:
+        playbook = playerCharacter[1]
+        name = playerCharacter[0]
+        manifestFile = open('./Character Stuff/Field Data/{} Fields.json'.format(playbook.Playbook()), 'r')
+        manifest = json.load(manifestFile)
+        manifestFile.close()
+        fieldsFile = open('./Character Stuff/Playtest1Characters/{}.json'.format(name), 'r')
+        fields = json.load(fieldsFile)
+        fieldsFile.close()
+        characters[name] = playbook(manifest, fields, alias=name)
+    return characters
+
 
 
 def LoadCharacter(playbook='Chosen', sheetPath='./Character Stuff/Demo Characters/', name=None):
@@ -57,6 +81,8 @@ class Character:
         for field in sheetFields:
             if('/V' in sheetFields[field]):
                 self.fields[field] = sheetFields[field]['/V']
+            elif(type(sheetFields[field]) == str):
+                self.fields[field] = sheetFields[field]
         if(alias != ''):
             self.alias = alias
         else:
@@ -121,6 +147,35 @@ class Character:
             self.harm = 7
         if(self.harm < 0):
             self.harm = 0
+    def MarkXP(self, xp):
+        self.xp += xp
+        if(self.xp > 5):
+            self.xp = 5
+        if(self.xp < 0):
+            self.xp = 0
+    def MarkLuck(self, luck):
+        self.luck += luck
+        if(self.luck > 7):
+            self.luck = 7
+        if(self.luck < 0):
+            self.luck = 0
+    def Save(self):
+        directory = './Character Stuff/Playtest1Characters/'
+        characterFile = open(directory+self.alias+'.json', 'w')
+        characterFile.write(json.dumps(self.fields))
+        characterFile.close()
+    def LoadFromJSON(name='', playbook=None):
+        directory = './Character Stuff/Playtest1Characters/'
+        manifestPath = './Character Stuff/Field Data/'
+        if(name+'.json' in os.listdir(directory) and issubclass(playbook, Character)):
+            characterFile = open(directory+name+'.json', 'r')
+            fields = json.load(characterFile)
+            manifestFile = open(manifestPath+'{} Fields.json'.format(playbook.Playbook()), 'r')
+            manifest = json.load(manifestFile)
+            characterFile.close()
+            manifestFile.close()
+            return playbook(manifest, fields)
+
 
 class Chosen(Character):
     def __init__(self, manifest, sheetFields, alias=''):
