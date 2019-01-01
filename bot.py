@@ -255,6 +255,16 @@ async def harm(ctx, character, harmNumber):
 	else:
 		await ctx.send("Character `{}` not found.".format(character.title()))
 
+@bot.command()
+@commands.is_owner()
+async def teaser(ctx):
+	embed = discord.Embed(title='Teaser')
+	textFile = open('./Embed Data/Teaser.txt')
+	text = textFile.read()
+	textFile.close()
+	embed.description = text
+	await ctx.send(embed=embed)
+
 
 
 
