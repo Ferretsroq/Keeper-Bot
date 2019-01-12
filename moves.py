@@ -18,12 +18,19 @@ emojiNumbers = ['0\u20e3',
 				'7\u20e3',
 				'8\u20e3',
 				'9\u20e3']
+plusEmoji = chr(0x2795)
+minusEmoji = chr(0x2796)
 dieEmoji = chr(0x1F3B2)
 charm = '<:charm:529025449582395402>'
 cool = '<:cool:529025448886140941>'
 sharp = '<:sharp:529025449028878356>'
 tough = '<:tough:529025448626094102>'
 weird = '<:weird:529025448936734761>'
+charmReaction = ':charm:529025449582395402'
+coolReaction = ':cool:529025448886140941'
+sharpReaction = ':sharp:529025449028878356'
+toughReaction = ':tough:529025448626094102'
+weirdReaction = ':weird:529025448936734761'
 charmID = 529025449582395402
 coolID = 529025448886140941
 sharpID = 529025449028878356
@@ -109,11 +116,12 @@ class RollMessage:
 		self.user = user
 		self.character = character
 		self.embed = discord.Embed()
+		self.bonus = 0
 		if(arg != ''):
 			self.embed.title = 'Roll for {} - {}'.format(character['name'], arg)
 		else:
 			self.embed.title = 'Roll for {}'.format(character['name'])
-		self.embed.description = 'Select a stat to roll with that stat, or select the die to roll with no stat.'
+		self.embed.description = 'Select a stat to roll with that stat, or select the die to roll with no stat.\nCurrent ongoing/forward bonus: {}'.format(self.bonus)
 		self.message = None
 		self.index = 0
 		self.die1 = random.randint(1,6)
@@ -125,21 +133,37 @@ class RollMessage:
 		self.message = await channel.send(embed=self.embed)
 		await self.SetReactions()
 	async def SetReactions(self):
-		emojis = list(self.message.guild.emojis) # Hooooooooly shit reactions are the dumbest fucking thing, I am so fucking mad right now
+		#emojis = list(self.message.guild.emojis) # Hooooooooly shit reactions are the dumbest fucking thing, I am so fucking mad right now
 		await self.message.clear_reactions()
-		await self.message.add_reaction(emojis[next(index for index,emoji in enumerate(emojis) if emoji.id==charmID)])
-		await self.message.add_reaction(emojis[next(index for index,emoji in enumerate(emojis) if emoji.id==coolID)])
-		await self.message.add_reaction(emojis[next(index for index,emoji in enumerate(emojis) if emoji.id==sharpID)])
-		await self.message.add_reaction(emojis[next(index for index,emoji in enumerate(emojis) if emoji.id==toughID)])
-		await self.message.add_reaction(emojis[next(index for index,emoji in enumerate(emojis) if emoji.id==weirdID)])
+		#await self.message.add_reaction(emojis[next(index for index,emoji in enumerate(emojis) if emoji.id==charmID)])
+		#await self.message.add_reaction(emojis[next(index for index,emoji in enumerate(emojis) if emoji.id==coolID)])
+		#await self.message.add_reaction(emojis[next(index for index,emoji in enumerate(emojis) if emoji.id==sharpID)])
+		#await self.message.add_reaction(emojis[next(index for index,emoji in enumerate(emojis) if emoji.id==toughID)])
+		#await self.message.add_reaction(emojis[next(index for index,emoji in enumerate(emojis) if emoji.id==weirdID)])
+		await self.message.add_reaction(charmReaction)
+		await self.message.add_reaction(coolReaction)
+		await self.message.add_reaction(sharpReaction)
+		await self.message.add_reaction(toughReaction)
+		await self.message.add_reaction(weirdReaction)
+		await self.message.add_reaction(plusEmoji)
+		await self.message.add_reaction(minusEmoji)
 		await self.message.add_reaction(dieEmoji)
+		self.embed.description = 'Select a stat to roll with that stat, or select the die to roll with no stat.\nCurrent ongoing/forward bonus: {}'.format(self.bonus)
+		await self.message.edit(embed=self.embed)
+	async def Add(self):
+		self.bonus += 1
+		await self.SetReactions()
+	async def Minus(self):
+		self.bonus -= 1
+		await self.SetReactions()
 	async def OnStatPick(self, stat=None):
 		if(stat):
 			self.statName = str(stat).split(':')[1] # discord emoji follow the form <:NAME:ID>
 			statValue = int(self.character[self.statName])
 			self.result += statValue
+		self.result += self.bonus
 		await self.ReportResult()
 	async def ReportResult(self):
-		self.embed.description = "You rolled **{}**\n(({}+{}) + {} for stat {})".format(self.result, self.die1, self.die2, self.character[self.statName], self.statName)
+		self.embed.description = "You rolled **{}**\n(({}+{}) + {} for stat {} + {} for ongoing/forward)".format(self.result, self.die1, self.die2, self.character[self.statName], self.statName, self.bonus)
 		await self.message.edit(embed=self.embed)
 		await self.message.clear_reactions()

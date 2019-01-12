@@ -291,7 +291,12 @@ async def teaser(ctx):
 	embed.description = text
 	await ctx.send(embed=embed)
 
-
+@bot.command()
+async def choose(ctx, choice1, choice2):
+	'''Randomly choose between two choices. For multiple words, enclose choices in "quotation marks."'''
+	result = random.choice([choice1, choice2])
+	message = await ctx.send("```{}```".format(result))
+	await message.add_reaction(":charm:529025449582395402")
 
 
 @bot.command()
@@ -341,9 +346,15 @@ async def on_reaction_add(reaction, user):
 			if(reaction.message.id == bot.rollMessages[user.id].message.id and bot.rollMessages[user.id].user == user):
 				if(str(reaction) in moves.statEmoji):
 					await bot.rollMessages[user.id].OnStatPick(str(reaction))
+					bot.rollMessages.pop(user.id)
 				elif(str(reaction) == moves.dieEmoji):
 					await bot.rollMessages[user.id].OnStatPick()
-				bot.rollMessages.pop(user.id)
+					bot.rollMessages.pop(user.id)
+				elif(str(reaction) == moves.plusEmoji):
+					await bot.rollMessages[user.id].Add()
+				elif(str(reaction) == moves.minusEmoji):
+					await bot.rollMessages[user.id].Minus()
+				
 
 async def save_characters():
 	await bot.wait_until_ready()
