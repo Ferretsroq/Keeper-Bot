@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 import characters
-import moves, notes
+import moves, notes, EmbedGenerator
 import os, csv
 import random
 import asyncio
@@ -80,8 +80,11 @@ async def allcharacters(ctx):
 	await bot.playbookMessages['Wronged'].Send(ctx)
 
 @bot.command()
-async def test(ctx, *, arg):
-	await ctx.send('You said {}'.format(arg))
+async def test(ctx):#, *, arg):
+	#await ctx.send('You said {}'.format(arg))
+	await ctx.invoke(chosen)
+	#await chosen(ctx)
+	#await bot.chosen(ctx)
 
 @bot.command()
 async def chosen(ctx):
@@ -296,7 +299,15 @@ async def choose(ctx, choice1, choice2):
 	'''Randomly choose between two choices. For multiple words, enclose choices in "quotation marks."'''
 	result = random.choice([choice1, choice2])
 	message = await ctx.send("```{}```".format(result))
-	await message.add_reaction(":charm:529025449582395402")
+
+@bot.command()
+@commands.is_owner()
+async def postembed(ctx, directory, name):
+	embed = EmbedGenerator.GenerateEmbed(directory, name)
+	await ctx.send(embed=embed)
+	await ctx.message.delete()
+
+
 
 
 @bot.command()

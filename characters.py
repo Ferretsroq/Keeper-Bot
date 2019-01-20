@@ -147,19 +147,42 @@ class Character:
             self.harm = 7
         if(self.harm < 0):
             self.harm = 0
+        self.UpdateFields()
     def MarkXP(self, xp):
         self.xp += xp
         if(self.xp > 5):
             self.xp = 5
         if(self.xp < 0):
             self.xp = 0
+        self.UpdateFields()
     def MarkLuck(self, luck):
         self.luck += luck
         if(self.luck > 7):
             self.luck = 7
         if(self.luck < 0):
             self.luck = 0
+        self.UpdateFields()
+    def UpdateFields(self):
+        # Harm
+        for harm in range(self.harm):
+            self.fields['harm{}'.format(harm)] = '/Yes'
+        for harmField in [field for field in self.fields if field.startswith('harm')]:
+            if(harmField[-1].isdigit() and int(harmField[-1]) >= self.harm):
+                self.fields.pop(harmField)
+        # XP
+        for xp in range(self.xp):
+            self.fields['xp{}'.format(xp)] = '/Yes'
+        for xpField in [field for field in self.fields if field.startswith('xp')]:
+            if(xpField[-1].isdigit() and int(xpField[-1]) >= self.xp):
+                self.fields.pop(xpField)
+        # Luck
+        for luck in range(self.luck):
+            self.fields['luck{}'.format(luck)] = '/Yes'
+        for luckField in [field for field in self.fields if field.startswith('luck')]:
+            if(luckField[-1].isdigit() and int(luckField[-1]) >= self.luck):
+                self.fields.pop(luckField)
     def Save(self):
+        self.UpdateFields()
         directory = './Character Stuff/Playtest1Characters/'
         characterFile = open(directory+self.alias+'.json', 'w')
         characterFile.write(json.dumps(self.fields))
