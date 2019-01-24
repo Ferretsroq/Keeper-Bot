@@ -726,7 +726,6 @@ def LoadAllCharactersFromJSON(playerCharacters=[], activeGame='Demo Characters')
     characters = {}
     for playbook in playbookClasses:
         if('{}.json'.format(playbook.Playbook()) in os.listdir('./Character Stuff/{}/'.format(activeGame))):
-            print('Hello, world!')
             manifestFile = open('./Character Stuff/Field Data/{} Fields.json'.format(playbook.Playbook()), 'r')
             manifest = json.load(manifestFile)
             manifestFile.close()
