@@ -11,6 +11,7 @@ TOKEN = open('token.token').read()
 bot = commands.Bot(command_prefix='$', case_insensitive=True)
 
 bot.moveMessage = None
+bot.activeGame = 'Playtest2Characters'
 
 bot.playbookMessages = {'Chosen': None,
 						'Crooked': None,
@@ -27,14 +28,15 @@ bot.playbookMessages = {'Chosen': None,
 						'Dominic': None,
 						'Reinard': None,
 						'Naomi': None}
-bot.playerCharacters = [('Dominic', characters.Chosen), ('Reinard', characters.Flake), ('Naomi', characters.Expert)]
+bot.playerCharacters = [('Dominic', characters.Chosen), ('Reinard', characters.Flake), ('Naomi', characters.Expert), ('Kyrie', characters.Divine)]
 bot.noteMessages = []
 bot.players = {133328216466259968: 'Dominic',
 			   111529517541036032: 'Spooky',
 			   448613063713751042: 'Reinard',
-			   449619391005327361: 'Naomi'}
+			   449619391005327361: 'Naomi',
+			   330869232810196992: 'Kyrie'}
 #bot.characters = characters.LoadAllCharacters(bot.playerCharacters)
-bot.characters = characters.LoadAllCharactersFromJSON(bot.playerCharacters)
+bot.characters = characters.LoadAllCharactersFromJSON(bot.playerCharacters, bot.activeGame)
 bot.rollMessages = {}
 
 @bot.command()
@@ -87,94 +89,24 @@ async def test(ctx):#, *, arg):
 	#await bot.chosen(ctx)
 
 @bot.command()
-async def chosen(ctx):
-	chosen = bot.characters['Chosen']
-	bot.playbookMessages['Chosen'] = characters.ChosenMessage(chosen, ctx.author)#characters.Chosen(data, fields), ctx.author)
-	await bot.playbookMessages['Chosen'].Send(ctx)
+async def char(ctx, name=''):
+	if(name.title() in bot.characters):
+		character = bot.characters[name.title()]
+		bot.playbookMessages[name.title()] = character.playbookMessage(character, ctx.author)
+		await bot.playbookMessages[name.title()].Send(ctx)
+	else:
+		validCharacters = '\n'.join([character.title() for character in list(bot.characters.keys())])
+		text = "Character {} not found. Valid characters:\n```\n{}```".format(name.title(), validCharacters)
+		await ctx.send(text)
 
 @bot.command()
-async def crooked(ctx):
-	crooked = bot.characters['Crooked']
-	bot.playbookMessages['Crooked'] = characters.CrookedMessage(crooked, ctx.author)#characters.Crooked(data, fields), ctx.author)
-	await bot.playbookMessages['Crooked'].Send(ctx)
-
-@bot.command()
-async def divine(ctx):
-	divine = bot.characters['Divine']
-	bot.playbookMessages['Divine'] = characters.DivineMessage(divine, ctx.author)#characters.Divine(data, fields), ctx.author)
-	await bot.playbookMessages['Divine'].Send(ctx)
-
-@bot.command()
-async def expert(ctx):
-	expert = bot.characters['Expert']
-	bot.playbookMessages['Expert'] = characters.ExpertMessage(expert, ctx.author)#characters.Expert(data, fields), ctx.author)
-	await bot.playbookMessages['Expert'].Send(ctx)
-
-@bot.command()
-async def flake(ctx):
-	flake = bot.characters['Flake']
-	bot.playbookMessages['Flake'] = characters.FlakeMessage(flake, ctx.author)#characters.Flake(data, fields), ctx.author)
-	await bot.playbookMessages['Flake'].Send(ctx)
-
-@bot.command()
-async def initiate(ctx):
-	initiate = bot.characters['Initiate']
-	bot.playbookMessages['Initiate'] = characters.InitiateMessage(initiate, ctx.author)#characters.Initiate(data, fields), ctx.author)
-	await bot.playbookMessages['Initiate'].Send(ctx)
-
-@bot.command()
-async def monstrous(ctx):
-	monstrous = bot.characters['Monstrous']
-	bot.playbookMessages['Monstrous'] = characters.MonstrousMessage(monstrous, ctx.author)#characters.Monstrous(data, fields), ctx.author)
-	await bot.playbookMessages['Monstrous'].Send(ctx)
-
-@bot.command()
-async def mundane(ctx):
-	mundane = bot.characters['Mundane']
-	bot.playbookMessages['Mundane'] = characters.MundaneMessage(mundane, ctx.author)#characters.Mundane(data, fields), ctx.author)
-	await bot.playbookMessages['Mundane'].Send(ctx)
-
-@bot.command()
-async def professional(ctx):
-	professional = bot.characters['Professional']
-	bot.playbookMessages['Professional'] = characters.ProfessionalMessage(professional, ctx.author)#characters.Professional(data, fields), ctx.author)
-	await bot.playbookMessages['Professional'].Send(ctx)
-
-@bot.command()
-async def spellslinger(ctx):
-	spellslinger = bot.characters['Spell-Slinger']
-	bot.playbookMessages['Spell-Slinger'] = characters.SpellSlingerMessage(spellslinger, ctx.author)#characters.SpellSlinger(data, fields), ctx.author)
-	await bot.playbookMessages['Spell-Slinger'].Send(ctx)
-
-@bot.command()
-async def spooky(ctx):
-	spooky = bot.characters['Spooky']
-	bot.playbookMessages['Spooky'] = characters.SpookyMessage(spooky, ctx.author)#characters.Spooky(data, fields), ctx.author)
-	await bot.playbookMessages['Spooky'].Send(ctx)
-
-@bot.command()
-async def wronged(ctx):
-	wronged = bot.characters['Wronged']
-	bot.playbookMessages['Wronged'] = characters.WrongedMessage(wronged, ctx.author)#characters.Wronged(data, fields), ctx.author)
-	await bot.playbookMessages['Wronged'].Send(ctx)
-
-@bot.command()
-async def dominic(ctx):
-	dominic = bot.characters['Dominic']
-	bot.playbookMessages['Dominic'] = characters.ChosenMessage(dominic, ctx.author)
-	await bot.playbookMessages['Dominic'].Send(ctx)
-
-@bot.command()
-async def reinard(ctx):
-	reinard = bot.characters['Reinard']
-	bot.playbookMessages['Reinard'] = characters.FlakeMessage(reinard, ctx.author)
-	await bot.playbookMessages['Reinard'].Send(ctx)
-
-@bot.command()
-async def naomi(ctx):
-	naomi = bot.characters['Naomi']
-	bot.playbookMessages['Naomi'] = characters.ExpertMessage(naomi, ctx.author)
-	await bot.playbookMessages['Naomi'].Send(ctx)
+@commands.is_owner()
+async def loadcharacter(ctx, name='', directory='Demo Characters', playbook='Chosen'):
+	path = './Character Stuff/{}/'.format(directory)
+	data, fields = characters.LoadCharacter(playbook=playbook.title(), sheetPath=path, name=name.title())
+	character = characters.PlaybookByName(playbook.title())(data, fields, alias=name.title())
+	character.Save(bot.activeGame)
+	bot.characters = characters.LoadAllCharactersFromJSON(bot.playerCharacters, bot.activeGame)
 
 
 @bot.command(name='moves')
@@ -372,7 +304,7 @@ async def save_characters():
 	while True:
 		print('Saving Characters')
 		for character in bot.characters:
-			bot.characters[character].Save()
+			bot.characters[character].Save(bot.activeGame)
 		await asyncio.sleep(60)
 
 if(__name__ == '__main__'):
