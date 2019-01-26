@@ -1,0 +1,22 @@
+{
+	"title": "stuff",
+	"description": "stuff",
+	"color": "0x123456",
+	"author": 
+				{
+					"name": "author name"
+				},
+	"fields": 
+				[
+					{
+						"name": "name",
+						"value": "value",
+						"inline": 0
+					},
+					{
+						"name": "name",
+						"value": "value",
+						"inline": 1
+					}
+				]
+}

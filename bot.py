@@ -38,6 +38,7 @@ bot.players = {133328216466259968: 'Dominic',
 #bot.characters = characters.LoadAllCharacters(bot.playerCharacters)
 bot.characters = characters.LoadAllCharactersFromJSON(bot.playerCharacters, bot.activeGame)
 bot.rollMessages = {}
+bot.embedGenerator = None
 
 @bot.command()
 @commands.is_owner()
@@ -234,10 +235,16 @@ async def choose(ctx, choice1, choice2):
 
 @bot.command()
 @commands.is_owner()
-async def postembed(ctx, directory, name):
-	embed = EmbedGenerator.GenerateEmbed(directory, name)
+async def postembed(ctx, name):#directory, name):
+	embed = EmbedGenerator.GenerateEmbed(name)
 	await ctx.send(embed=embed)
 	await ctx.message.delete()
+
+@bot.command()
+@commands.is_owner()
+async def makeembed(ctx, filename='foo', author='', title='', color='', description =''):
+	bot.embedGenerator = EmbedGenerator.EmbedGenerator(ctx, filename, author, title, color, description)
+	await bot.embedGenerator.Send(ctx)
 
 
 
@@ -297,7 +304,10 @@ async def on_reaction_add(reaction, user):
 					await bot.rollMessages[user.id].Add()
 				elif(str(reaction) == moves.minusEmoji):
 					await bot.rollMessages[user.id].Minus()
-				
+		if(bot.embedGenerator != None and user.id == bot.embedGenerator.ctx.author.id):
+			if(str(reaction) == EmbedGenerator.checkEmoji):
+				await bot.embedGenerator.Save()
+
 
 async def save_characters():
 	await bot.wait_until_ready()
