@@ -23,18 +23,24 @@ def GenerateEmbed(name):
 
 
 class EmbedGenerator:
-	def __init__(self, ctx, filename='', author='', title='', color='', description=''):
+	def __init__(self, ctx, filename='', author='', title='', color='', description='', image=''):
 		self.ctx = ctx
 		self.filename = filename
 		self.author = author
 		self.title = title
-		self.color = int(color,0)
+		if(color != ''):
+			self.color = int(color,0)
+		else:
+			self.color = 0
 		self.description = description
+		self.image = image
 		self.embed = discord.Embed()
 		self.embed.set_author(name=self.author)
 		self.embed.title = self.title
 		self.embed.color = self.color
 		self.embed.description = self.description
+		if(image != ''):
+			self.embed.set_thumbnail(url=image)
 		self.message = None
 	async def Send(self, ctx):
 		self.message = await ctx.send("This is your embed! React with {} to save with name {}!".format(checkEmoji, self.filename), embed=self.embed)

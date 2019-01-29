@@ -235,15 +235,15 @@ async def choose(ctx, choice1, choice2):
 
 @bot.command()
 @commands.is_owner()
-async def postembed(ctx, name):#directory, name):
+async def postembed(ctx, name=''):
 	embed = EmbedGenerator.GenerateEmbed(name)
 	await ctx.send(embed=embed)
 	await ctx.message.delete()
 
 @bot.command()
 @commands.is_owner()
-async def makeembed(ctx, filename='foo', author='', title='', color='', description =''):
-	bot.embedGenerator = EmbedGenerator.EmbedGenerator(ctx, filename, author, title, color, description)
+async def makeembed(ctx, filename='foo', author='', title='', color='', description ='', image=''):
+	bot.embedGenerator = EmbedGenerator.EmbedGenerator(ctx, filename, author, title, color, description, image)
 	await bot.embedGenerator.Send(ctx)
 
 
