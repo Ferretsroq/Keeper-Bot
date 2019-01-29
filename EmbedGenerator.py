@@ -43,4 +43,4 @@ class EmbedGenerator:
 		dataFile = open('./Embed Data/{}.json'.format(self.filename), 'w')
 		json.dump(self.embed.to_dict(), dataFile)
 		dataFile.close()
-		await self.message.edit("Embed {} saved!".format(self.filename))
+		await self.message.edit(content="Embed {} saved!".format(self.filename))
