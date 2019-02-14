@@ -92,8 +92,8 @@ class Character:
         self.UpdateFields()
     def MarkXP(self, xp):
         self.xp += xp
-        if(self.xp > 5):
-            self.xp = 5
+        #if(self.xp > 5):
+        #    self.xp = 5
         if(self.xp < 0):
             self.xp = 0
         self.UpdateFields()

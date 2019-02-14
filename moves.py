@@ -135,6 +135,8 @@ class RollMessage:
 	async def SetReactions(self):
 		#emojis = list(self.message.guild.emojis) # Hooooooooly shit reactions are the dumbest fucking thing, I am so fucking mad right now
 		await self.message.clear_reactions()
+		self.embed.description = 'Select a stat to roll with that stat, or select the die to roll with no stat.\nCurrent ongoing/forward bonus: {}'.format(self.bonus)
+		await self.message.edit(embed=self.embed)
 		#await self.message.add_reaction(emojis[next(index for index,emoji in enumerate(emojis) if emoji.id==charmID)])
 		#await self.message.add_reaction(emojis[next(index for index,emoji in enumerate(emojis) if emoji.id==coolID)])
 		#await self.message.add_reaction(emojis[next(index for index,emoji in enumerate(emojis) if emoji.id==sharpID)])
@@ -148,8 +150,8 @@ class RollMessage:
 		await self.message.add_reaction(plusEmoji)
 		await self.message.add_reaction(minusEmoji)
 		await self.message.add_reaction(dieEmoji)
-		self.embed.description = 'Select a stat to roll with that stat, or select the die to roll with no stat.\nCurrent ongoing/forward bonus: {}'.format(self.bonus)
-		await self.message.edit(embed=self.embed)
+		#self.embed.description = 'Select a stat to roll with that stat, or select the die to roll with no stat.\nCurrent ongoing/forward bonus: {}'.format(self.bonus)
+		#await self.message.edit(embed=self.embed)
 	async def Add(self):
 		self.bonus += 1
 		await self.SetReactions()
