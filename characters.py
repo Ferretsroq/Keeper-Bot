@@ -479,7 +479,7 @@ class CharacterMessage:
         self.embed.clear_fields()
         self.embed.description = "**Moves**"
         for move in self.character.moves:
-            self.embed.add_field(name=move.split('\n')[0], value=move.split('\n')[1], inline=False)
+            self.embed.add_field(name=move.split('\n')[0], value=move.split('\n', 1)[1], inline=False)
         await self.message.edit(embed=self.embed)
         await self.SetReactions()
     async def SetReactions(self):
