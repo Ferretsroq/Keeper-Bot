@@ -11,7 +11,7 @@ TOKEN = open('token.token').read()
 bot = commands.Bot(command_prefix='$', case_insensitive=True)
 
 bot.moveMessage = None
-bot.activeGame = 'Playtest2Characters'
+bot.activeGame = 'Playtest3Characters'
 
 bot.playbookMessages = {'Chosen': None,
 						'Crooked': None,

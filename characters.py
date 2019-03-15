@@ -28,7 +28,19 @@ class Character:
             self.alias = alias
         else:
             self.alias = self.fields['name']
-        self.moves = [self.manifest[move] for move in self.fields if move.startswith('move')]
+        self.moves = [self.manifest[move] for move in self.fields if move.startswith('move') and move in self.manifest]
+        for field in self.fields:
+        	if(field.startswith('move') and field not in self.manifest):
+        		movePlaybook = field.replace('move', '')
+        		while(movePlaybook[-1].isdigit() and len(movePlaybook) != 0):
+        			movePlaybook = movePlaybook[:-1]
+        		targetManifestFile = open('./Character Stuff/Field Data/{} Fields.json'.format(movePlaybook.title()))
+        		targetManifest = json.load(targetManifestFile)
+        		targetManifestFile.close()
+        		targetMove = targetManifest[field.replace(movePlaybook, '')]
+        		self.moves += [targetMove]
+
+
         self.harm = len([field for field in self.fields if field.startswith('harm')])
         self.luck = len([field for field in self.fields if field.startswith('luck')])
         self.xp = len([field for field in self.fields if field.startswith('xp')])
