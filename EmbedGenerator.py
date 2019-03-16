@@ -23,7 +23,7 @@ def GenerateEmbed(name):
 
 
 class EmbedGenerator:
-	def __init__(self, ctx, filename='', author='', title='', color='', description='', image=''):
+	def __init__(self, ctx, filename='', author='', title='', color='', description='', thumbnail='', image=''):
 		self.ctx = ctx
 		self.filename = filename
 		self.author = author
@@ -39,8 +39,10 @@ class EmbedGenerator:
 		self.embed.title = self.title
 		self.embed.color = self.color
 		self.embed.description = self.description
+		if(thumbnail != ''):
+			self.embed.set_thumbnail(url=thumbnail)
 		if(image != ''):
-			self.embed.set_thumbnail(url=image)
+			self.embed.set_image(url=image)
 		self.message = None
 	async def Send(self, ctx):
 		self.message = await ctx.send("This is your embed! React with {} to save with name {}!".format(checkEmoji, self.filename), embed=self.embed)

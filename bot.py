@@ -242,8 +242,8 @@ async def postembed(ctx, name=''):
 
 @bot.command()
 @commands.is_owner()
-async def makeembed(ctx, filename='foo', author='', title='', color='', description ='', image=''):
-	bot.embedGenerator = EmbedGenerator.EmbedGenerator(ctx, filename, author, title, color, description, image)
+async def makeembed(ctx, filename='foo', author='', title='', color='', description ='', thumbnail='', image=''):
+	bot.embedGenerator = EmbedGenerator.EmbedGenerator(ctx, filename, author, title, color, description, thumbnail, image)
 	await bot.embedGenerator.Send(ctx)
 
 
