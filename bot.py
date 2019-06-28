@@ -28,13 +28,14 @@ bot.playbookMessages = {'Chosen': None,
 						'Dominic': None,
 						'Reinard': None,
 						'Naomi': None}
-bot.playerCharacters = [('Dominic', characters.Chosen), ('Reinard', characters.Flake), ('Naomi', characters.Expert), ('Kyrie', characters.Divine)]
+bot.playerCharacters = [('Dominic', characters.Chosen), ('Reinard', characters.Flake), ('Naomi', characters.Expert), ('Kyrie', characters.Divine), ('Ben', characters.SpellSlinger)]
 bot.noteMessages = []
 bot.players = {133328216466259968: 'Dominic',
 			   111529517541036032: 'Spooky',
 			   448613063713751042: 'Reinard',
 			   449619391005327361: 'Naomi',
-			   330869232810196992: 'Kyrie'}
+			   330869232810196992: 'Kyrie',
+			   222370387596410881: 'Ben'}
 #bot.characters = characters.LoadAllCharacters(bot.playerCharacters)
 bot.characters = characters.LoadAllCharactersFromJSON(bot.playerCharacters, bot.activeGame)
 bot.rollMessages = {}
