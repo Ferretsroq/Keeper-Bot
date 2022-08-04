@@ -57,7 +57,7 @@ class Character
                 {
                     movePlaybook = movePlaybook.slice(0, movePlaybook.length-1);
                 }
-                let targetManifestFile = fs.readFileSync(`./Character Stuff/Field Data/${movePlaybook}.json`);
+                let targetManifestFile = fs.readFileSync(`./Character Stuff/Field Data/${movePlaybook} Fields.json`);
                 let targetManifest = JSON.parse(targetManifestFile);
                 let targetMove = targetManifest[fieldKeys[fieldIndex].replace(movePlaybook, '')];
                 this.moves.push(targetMove);
