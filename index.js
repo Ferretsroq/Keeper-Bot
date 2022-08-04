@@ -149,7 +149,7 @@ client.login(token);
 function LoadCharacters(client)
 {
 	let playerCharacters = [['Anne', Character.Professional], ['Shaggy', Character.Spooky], ['Aaron Hunter', Character.Monstrous], ['Quinn', Character.Searcher], ['Chuck', Character.Chosen]];
-	client.characters = Character.LoadAllCharactersFromJSON(playerCharacters);
+	client.characters = Character.LoadAllCharactersFromJSON(playerCharacters, client.activeGame);
 }
 
 function SaveCharacters(client)
