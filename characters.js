@@ -1233,10 +1233,12 @@ function LoadAllCharactersFromJSON(playerCharacters=[], activeGame='Demo Charact
     }
     for(let playerCharacter = 0; playerCharacter < playerCharacters.length; playerCharacter++)
     {
+        console.log(playerCharacters[playerCharacter][0]);
         if(fs.existsSync(`./Character Stuff/${activeGame}/${playerCharacters[playerCharacter][0]}.json`))
         {
             let playbook = playerCharacters[playerCharacter][1];
             let name = playerCharacters[playerCharacter][0];
+            console.log(name);
             let manifestFile = fs.readFileSync(`./Character Stuff/Field Data/${playbook.Playbook()} Fields.json`);
             let manifest = JSON.parse(manifestFile);
             let fieldsFile = fs.readFileSync(`./Character Stuff/${activeGame}/${name}.json`);
