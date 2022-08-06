@@ -35,7 +35,7 @@ module.exports =
 		}
 		else
 		{
-			char.MarkXP(harmNumber);
+			char.MarkXP(xpNumber);
 			await interaction.reply(`Added ${xpNumber} xp to ${name}.\nCurrent xp: ${char.xp}/5`);
 		}
 	},
