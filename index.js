@@ -71,6 +71,18 @@ client.on('interactionCreate', async interaction =>
 		{
 			await command.execute(interaction, client.characters, client.players)
 		}
+		else if(interaction.commandName === 'xp')
+		{
+			await command.execute(interaction, client.characters);
+		}
+		else if(interaction.commandName === 'harm')
+		{
+			await command.execute(interaction, client.characters);
+		}
+		else if(interaction.commandName === 'luck')
+		{
+			await command.execute(interaction, client.characters);
+		}
 		else
 		{
 			await command.execute(interaction);
