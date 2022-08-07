@@ -60,7 +60,7 @@ module.exports =
 		{
 			result = 'Mixed Success'
 		}
-		let embed = new EmbedBuilder().setTitle(`Roll for ${this.character.alias} — ${this.description}`).setDescription(`You rolled **${total}**\n**${result}**\n((${die1}+${die2} + ${statBonus} for stat ${stat} + ${this.bonus} for ongoing/forward)`);
+		let embed = new EmbedBuilder().setTitle(`Roll for ${this.character.alias} — ${this.description}`).setDescription(`You rolled **${total}**\n**${result}**\n((${die1}+${die2}) + ${statBonus} for stat ${stat} + ${this.bonus} for ongoing/forward)`);
 		await interaction.update({embeds: [embed], components: []});
 		//await interaction.update({content: `**${result}**\n${die1}+${die2}+${statBonus}+${this.bonus} = ${total}\nRolled with ${stat}`, components: []})
 	},

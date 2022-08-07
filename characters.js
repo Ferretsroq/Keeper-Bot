@@ -113,7 +113,7 @@ class Character
         let embed = new EmbedBuilder().setTitle(`**The ${this.Playbook()} — ${this.alias}**`).setDescription(description);
         for(let move = 0; move < this.moves.length; move++)
         {
-            embed.addFields({name: this.moves[move].split('\n')[0], value: this.moves[move].split('\n')[1]});
+            embed.addFields({name: this.moves[move].split('\n')[0], value: this.moves[move].split('\n').splice(1).join('\n')});
         }
         let improvementList = [];
         let advancedList = [];
